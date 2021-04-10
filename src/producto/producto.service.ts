@@ -3,6 +3,7 @@ import { dataDto } from './entity/data.tdo'
 import { Producto } from './entity/productos'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ProductoRe } from './product'
+import { getRepository } from 'typeorm'
 
 @Injectable()
 export class ProductoService {
@@ -19,16 +20,20 @@ export class ProductoService {
     producto.precio = precio
     producto.existencia = existencia
 
-    producto.save()
-
-    return producto
+    return producto.save()
   }
 
   async getData(id: string) {
-    const found = await this.producto.findOne({
+    const found = await getRepository(Producto).createQueryBuilder().where('id = :id', { id }).getOne()
+    return !found ? null : found; 
+    /* const found = await this.producto.findOne({
       where: { id: id },
     })
-    const precio = found.precio
-    return precio
+    try {
+      const precio = found.precio
+      return precio
+    } catch(e) {
+      return null;
+    } */
   }
 }

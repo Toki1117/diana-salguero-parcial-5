@@ -6,13 +6,14 @@ import { ProductoService } from './producto.service'
 export class ProductoController {
   constructor(private service: ProductoService) {}
 
-  @Post('insertar')
+  @Post()
   async insertData(@Body() data: dataDto) {
     return this.service.insertData(data)
   }
 
   @Get('/:id')
   async getProducto(@Param('id') id: string) {
-    return this.service.getData(id)
+    const result = await this.service.getData(id)
+    return !result ? 'No encontrado' : `El precio de ${result.nombre} es $${result.precio}`
   }
 }
